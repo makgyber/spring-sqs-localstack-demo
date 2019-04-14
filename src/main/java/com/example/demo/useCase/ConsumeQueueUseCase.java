@@ -1,31 +1,38 @@
-package com.example.demo.useCase.ReceiveMessage;
+package com.example.demo.useCase;
 
+
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.Message;
-import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import com.example.demo.provider.FifoQueue;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.Map;
 
-public class ReceiveMessageUseCase {
+public class ConsumeQueueUseCase {
+    FifoQueue fifo;
+    AmazonSQS sqs;
 
-    private final AmazonSQS sqs;
-    private final String queueUrl;
+//    @Value("queueUrl")
+    String queueUrl = "http://localhost:4576/queue/payment_instructions.fifo";;
 
-    public ReceiveMessageUseCase(AmazonSQS sqs, String queueUrl) {
-        this.sqs = sqs;
-        this.queueUrl = queueUrl;
+    public ConsumeQueueUseCase() {
+
+        sqs =  AmazonSQSClientBuilder.standard()
+                .withEndpointConfiguration(
+                        new AwsClientBuilder.EndpointConfiguration("http://localhost:4576", "REGION")
+                ).build();
+
+
+        fifo = new FifoQueue(sqs, queueUrl);
     }
 
     public void handle() {
-        // Receive messages.
-        System.out.println("Receiving messages from MyFifoQueue.fifo.\n");
-        final ReceiveMessageRequest receiveMessageRequest =
-                new ReceiveMessageRequest(queueUrl);
 
-        receiveMessageRequest.setReceiveRequestAttemptId("1");
-        final List<Message> messages = sqs.receiveMessage(receiveMessageRequest)
-                .getMessages();
+        List<Message> messages = fifo.receiveMessages();
         for (final Message message : messages) {
             System.out.println("Message");
             System.out.println("  MessageId:     "
@@ -42,8 +49,8 @@ public class ReceiveMessageUseCase {
                 System.out.println("  Name:  " + entry.getKey());
                 System.out.println("  Value: " + entry.getValue());
             }
+            fifo.deleteMessage(message);
         }
-        System.out.println("DONE");
-    }
 
+    }
 }

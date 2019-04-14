@@ -22,6 +22,10 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
         <dependency>
@@ -38,22 +42,26 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
-            <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-java-sdk-sqs</artifactId>
-            </dependency>
-
         <dependency>
-            <groupId>cloud.localstack</groupId>
-            <artifactId>localstack-utils</artifactId>
-            <version>0.1.19</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sqs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>amazon-sqs-java-messaging-lib</artifactId>
+            <version>1.0.4</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>cloud.localstack</groupId>
             <artifactId>localstack-utils</artifactId>
             <version>0.1.19</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.1.6.RELEASE</version>
         </dependency>
     </dependencies>
 
